@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://marklogic.com/appservices/search" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="options" type="sear:optionsType" xmlns:sear="http://marklogic.com/appservices/search"/>
+  <xs:complexType name="termType">
+    <xs:sequence>
+      <xs:element type="sear:emptyType" name="empty" xmlns:sear="http://marklogic.com/appservices/search"/>
+      <xs:element name="term-option" maxOccurs="unbounded" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="punctuation-insensitive"/>
+            <xs:enumeration value="stemmed"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="apply"/>
+  </xs:complexType>
+  <xs:complexType name="latType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="ns"/>
+        <xs:attribute type="xs:string" name="name"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="grammarType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="quotation"/>
+      <xs:element type="sear:implicitType" name="implicit" xmlns:sear="http://marklogic.com/appservices/search"/>
+      <xs:element type="sear:starterType" name="starter" maxOccurs="unbounded" minOccurs="0" xmlns:sear="http://marklogic.com/appservices/search"/>
+      <xs:element type="sear:joinerType" name="joiner" maxOccurs="unbounded" minOccurs="0" xmlns:sear="http://marklogic.com/appservices/search"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="stateType">
+    <xs:sequence>
+      <xs:element type="sear:transform-resultsType" name="transform-results" xmlns:sear="http://marklogic.com/appservices/search"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="name" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="constraintType">
+    <xs:sequence>
+      <xs:element type="sear:collectionType" name="collection" minOccurs="0" xmlns:sear="http://marklogic.com/appservices/search"/>
+      <xs:element type="sear:rangeType" name="range" minOccurs="0" xmlns:sear="http://marklogic.com/appservices/search"/>
+      <xs:element type="sear:geo-elem-pairType" name="geo-elem-pair" minOccurs="0" xmlns:sear="http://marklogic.com/appservices/search"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="name" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="transform-resultsType">
+    <xs:sequence>
+      <xs:element type="sear:preferred-elementsType" name="preferred-elements" xmlns:sear="http://marklogic.com/appservices/search"/>
+      <xs:element name="max-matches">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="1"/>
+            <xs:enumeration value="2"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="max-snippet-chars">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="150"/>
+            <xs:enumeration value="400"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="per-match-tokens">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="20"/>
+            <xs:enumeration value="30"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="apply" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="optionsType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="search-option"/>
+      <xs:element type="xs:string" name="page-length"/>
+      <xs:element type="sear:additional-queryType" name="additional-query" xmlns:sear="http://marklogic.com/appservices/search">
+        <xs:annotation>
+          <xs:documentation>Limit all searches to this additional query</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element type="sear:termType" name="term" xmlns:sear="http://marklogic.com/appservices/search">
+        <xs:annotation>
+          <xs:documentation>Full-text search options</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element type="sear:grammarType" name="grammar" xmlns:sear="http://marklogic.com/appservices/search">
+        <xs:annotation>
+          <xs:documentation>Default grammer</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element type="sear:sort-orderType" name="sort-order" xmlns:sear="http://marklogic.com/appservices/search">
+        <xs:annotation>
+          <xs:documentation>Default sort order. You can also associate states with sort orders to allow switching sort orders</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element type="sear:transform-resultsType" name="transform-results" xmlns:sear="http://marklogic.com/appservices/search">
+        <xs:annotation>
+          <xs:documentation>Not used, but the default snippeting behavior if no state (see compact/detailed below) was specified</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element type="xs:string" name="return-query"/>
+      <xs:element type="sear:operatorType" name="operator" xmlns:sear="http://marklogic.com/appservices/search">
+        <xs:annotation>
+          <xs:documentation>This controls the snippet size toggle</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element type="xs:string" name="annotation">
+        <xs:annotation>
+          <xs:documentation>Annotations (allowed pretty much anywhere) allow adding text or elements to feed custom components with options that would normally not validate)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element type="sear:constraintType" name="constraint" maxOccurs="unbounded" minOccurs="0" xmlns:sear="http://marklogic.com/appservices/search">
+        <xs:annotation>
+          <xs:documentation>Facet based on document collections, simple yet elegant  optionally enable a prefix to see a specific subset of facets
+    &lt;collection facet="true" prefix="data/" />
+     Example facet based on the sample-data  Example geospatial facet based on the sample-data, used by map theme</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element type="sear:extract-document-dataType" name="extract-document-data" xmlns:sear="http://marklogic.com/appservices/search">
+        <xs:annotation>
+          <xs:documentation><![CDATA[example facet constraint below 
+  <constraint name="myconstraint">
+    <range type="xs:string" facet="true">
+      <facet-option>limit=5</facet-option>
+      <facet-option>frequency-order</facet-option>
+      <facet-option>descending</facet-option>
+      <element ns="" name="my-el"/>
+    </range>
+  </constraint>
+   example suggestion-source below 
+  <suggestion-source ref="myconstraint">
+    <suggestion-option>frequency-order</suggestion-option>
+    <suggestion-option>descending</suggestion-option>
+    <suggestion-option>limit=10</suggestion-option>
+  </suggestion-source>
+   This will extract the latitude and longitude from the search.]]></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="joinerType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="strength" use="optional"/>
+        <xs:attribute type="xs:string" name="apply" use="optional"/>
+        <xs:attribute type="xs:string" name="element" use="optional"/>
+        <xs:attribute type="xs:string" name="tokenize" use="optional"/>
+        <xs:attribute type="xs:string" name="consume" use="optional"/>
+        <xs:attribute type="xs:string" name="compare" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="parentType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="ns"/>
+        <xs:attribute type="xs:string" name="name"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="implicitType">
+    <xs:sequence>
+      <xs:element ref="cts:and-query" xmlns:cts="http://marklogic.com/cts"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="additional-queryType">
+    <xs:sequence>
+      <xs:element ref="cts:collection-query" xmlns:cts="http://marklogic.com/cts"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="rangeType">
+    <xs:sequence>
+      <xs:element name="facet-option" maxOccurs="unbounded" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="limit=5"/>
+            <xs:enumeration value="frequency-order"/>
+            <xs:enumeration value="descending"/>
+            <xs:enumeration value="item-order"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="path-index">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="eyeColor"/>
+            <xs:enumeration value="docFormat"/>
+            <xs:enumeration value="gender"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="type" use="optional"/>
+    <xs:attribute type="xs:string" name="facet" use="optional"/>
+    <xs:attribute type="xs:string" name="collation" use="optional"/>
+  </xs:complexType>
+  <xs:complexType name="lonType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="ns"/>
+        <xs:attribute type="xs:string" name="name"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="starterType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="strength" use="optional"/>
+        <xs:attribute type="xs:string" name="apply" use="optional"/>
+        <xs:attribute type="xs:string" name="delimiter" use="optional"/>
+        <xs:attribute type="xs:string" name="element" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="operatorType">
+    <xs:sequence>
+      <xs:element type="sear:stateType" name="state" maxOccurs="unbounded" minOccurs="0" xmlns:sear="http://marklogic.com/appservices/search"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="name"/>
+  </xs:complexType>
+  <xs:complexType name="emptyType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="apply"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="sort-orderType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="score"/>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="direction"/>
+  </xs:complexType>
+  <xs:complexType name="heatmapType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="s"/>
+        <xs:attribute type="xs:string" name="w"/>
+        <xs:attribute type="xs:string" name="n"/>
+        <xs:attribute type="xs:string" name="e"/>
+        <xs:attribute type="xs:string" name="latdivs"/>
+        <xs:attribute type="xs:string" name="londivs"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="elementType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="ns" use="optional"/>
+        <xs:attribute type="xs:string" name="name" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="preferred-elementsType">
+    <xs:sequence>
+      <xs:element type="sear:elementType" name="element" xmlns:sear="http://marklogic.com/appservices/search"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="geo-elem-pairType">
+    <xs:sequence>
+      <xs:element type="sear:parentType" name="parent" xmlns:sear="http://marklogic.com/appservices/search"/>
+      <xs:element type="sear:latType" name="lat" xmlns:sear="http://marklogic.com/appservices/search"/>
+      <xs:element type="sear:lonType" name="lon" xmlns:sear="http://marklogic.com/appservices/search"/>
+      <xs:element name="geo-option" maxOccurs="unbounded" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="boundaries-included"/>
+            <xs:enumeration value="score-function=reciprocal"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element type="sear:heatmapType" name="heatmap" xmlns:sear="http://marklogic.com/appservices/search"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="collectionType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="facet"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="extract-document-dataType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="selected"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:schema>
