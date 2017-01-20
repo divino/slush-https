@@ -1,0 +1,16 @@
+{
+  "app-name": "slush-https",
+  "ml-version": "8",
+  "ml-host": "localhost",
+  "ml-admin-user": "admin",
+  "ml-admin-pass": "admin",
+  "ml-app-user": "slush-https-user",
+  "ml-app-pass": "2jr>5m9m;+#$tB$()",
+  "ml-http-port": "55540",
+  "node-port": "55570",
+  "guest-access": "false",
+  "disallow-updates": "false",
+  "appusers-only": "false",
+  "https": "true",
+  "httpsStrict": "false"
+}
