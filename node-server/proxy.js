@@ -4,8 +4,9 @@
 
 var router = require('express').Router();
 var authHelper = require('./utils/auth-helper');
-var http = require('http');
+//var http = require('http');
 var options = require('./utils/options')();
+var http = options.https?require('https'):require('http');
 
 // ==================================
 // MarkLogic REST API endpoints

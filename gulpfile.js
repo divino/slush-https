@@ -900,8 +900,8 @@ function serve(env, specRunner) {
   var debugMode = '--debug';
   var nodeOptions = getNodeOptions(env);
 
-  //nodeOptions.nodeArgs = (args.debug || args.debugBrk) ? [debugMode + '=5858'] : [];
-  nodeOptions.nodeArgs = (args.debug || args.debugBrk) ? [debugMode + '=' + (args.debug?args.debug:args.debugBrk)] : [];
+  nodeOptions.nodeArgs = (args.debug || args.debugBrk) ? [debugMode + '=5858'] : [];
+  //nodeOptions.nodeArgs = (args.debug || args.debugBrk) ? [debugMode + '=' + (args.debug?args.debug:args.debugBrk)] : [];
 
   if (args.verbose) {
     log(nodeOptions);
