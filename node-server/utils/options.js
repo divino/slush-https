@@ -26,11 +26,9 @@ module.exports = function(){
     appUsersOnly: bool(process.env.APP_USERS_ONLY || envJson['appusers-only'] || config.marklogic.appUsersOnly || false)
   };
 
-  if (!options.httpsStrict) {
-    console.log("Allow self signed certificates.");
+  if (options.httpsStrict != "true") {
+    console.warn("Allowing self signed certificates.");
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-  } else {
-    console.log("Self signed certificates not allowed.");
   }
 
   return options;

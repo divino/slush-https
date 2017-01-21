@@ -962,7 +962,9 @@ function getNodeOptions(env) {
       'ML_APP_PASS': args['ml-app-pass'] || process.env.ML_APP_PASS || envJson['ml-app-pass'] || config.marklogic.password,
       'ML_PORT': args['ml-http-port'] || process.env.ML_PORT || envJson['ml-http-port'] || config.marklogic.httpPort,
       'ML_XCC_PORT': args['ml-xcc-port'] || process.env.ML_XCC_PORT || envJson['ml-xcc-port'] || config.marklogic.xccPort,
-      'ML_VERSION': args['ml-version'] || process.env.ML_VERSION || envJson['ml-version'] || config.marklogic.version
+      'ML_VERSION': args['ml-version'] || process.env.ML_VERSION || envJson['ml-version'] || config.marklogic.version,
+      'HTTPS' : args['https'] || process.env.HTTPS || envJson['https'] || config.marklogic.https,
+      'HTTPS_STRICT': args['httpsStrict'] || process.env.HTTPS_STRICT || envJson['httpsStrict'] || config.marklogic.httpsStrict
     },
     watch: [config.server]
   };
@@ -991,8 +993,18 @@ function startBrowserSync(env, specRunner) {
       .on('change', changeEvent);
   }
 
+  var proxyUrl = 'localhost:' + nodeOptions.env.APP_PORT;
+  if (nodeOptions.env.HTTPS == "true") {
+    proxyUrl = 'https://' + proxyUrl;
+  }
+
+  if (nodeOptions.env.HTTPS_STRICT != "true") {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+  }
+
   var options = {
-    proxy: 'localhost:' + nodeOptions.env.APP_PORT,
+    proxy: proxyUrl,
+    //proxy: 'localhost:' + nodeOptions.env.APP_PORT,
     port: 3000,
     files: isDevMode(env) ? [
       config.client + '**/*.*',
