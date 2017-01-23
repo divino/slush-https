@@ -16,6 +16,8 @@ module.exports = function(){
     appName: process.env.APP_NAME || envJson['app-name'] || 'slush-app',
     https: process.env.HTTPS || envJson['https'] == "true" || false,
     httpsStrict: process.env.HTTPS_STRICT || envJson['httpsStrict'] == "true" || false,
+    // ML CERTIFICATE should be set if "ssl require client certificate" of the ML AppServer is set to true
+    mlCertificate: process.env.ML_CERTIFICATE || envJson['mlCertificate'] || "",
     appPort: process.env.APP_PORT || process.env.PORT || envJson['node-port'] || config.defaultPort,
     mlHost: process.env.ML_HOST || envJson['ml-host'] || config.marklogic.host,
     mlHttpPort: process.env.ML_PORT || envJson['ml-http-port'] || config.marklogic.httpPort,

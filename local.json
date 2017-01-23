@@ -12,5 +12,6 @@
   "disallow-updates": "false",
   "appusers-only": "false",
   "https": "true",
-  "httpsStrict": "false"
+  "httpsStrict": "false",
+  "mlCertificate": "certificate-ml.crt"
 }

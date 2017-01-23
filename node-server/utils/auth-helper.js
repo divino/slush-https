@@ -2,7 +2,6 @@
 
 'use strict';
 
-//var http = require('http');
 var options = require('./options')();
 var http = options.https?require('https'):require('http');
 var q = require('q');
