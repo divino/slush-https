@@ -7,7 +7,6 @@ var router = require('express').Router();
 var authHelper = require('./utils/auth-helper');
 var bodyParser = require('body-parser');
 var four0four = require('./utils/404')();
-//var http = require('http');
 var options = require('./utils/options')();
 var http = options.https?require('https'):require('http');
 

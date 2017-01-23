@@ -13,5 +13,7 @@
   "appusers-only": "false",
   "https": "true",
   "httpsStrict": "false",
-  "mlCertificate": "certificate-ml.crt"
+  "mlCertificate": "certificate-ml.crt",
+  "nodeJsCertificate": "server.crt",
+  "nodeJsPrivateKey": "server.key"
 }

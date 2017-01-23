@@ -16,7 +16,6 @@ var authHelper = require('./utils/auth-helper');
 var port = options.appPort;
 var environment = options.env;
 
-
 authHelper.init();
 
 // Making this middle-tier slightly more secure: https://www.npmjs.com/package/helmet#how-it-works
@@ -79,22 +78,15 @@ switch (environment){
     break;
 }
 
-/*
-var server = app.listen(port, function() {
-  console.log('Express server listening on port ' + port);
-  console.log('env = ' + app.get('env') +
-    '\n__dirname = ' + __dirname  +
-    '\nprocess.cwd = ' + process.cwd());
-});
-*/
-
 var server = null;
 if (options.https) {
   // Docs on how to create self signed certificates
   // https://devcenter.heroku.com/articles/ssl-certificate-self#prerequisites
   console.log("Starting the server in https");
-  var privateKey  = fs.readFileSync('server.key', 'utf8');
-  var certificate = fs.readFileSync('server.crt', 'utf8');
+  console.log("Node Certificate " + options.nodeJsCertificate);
+  console.log("Node JS key " + options.nodeJsPrivateKey);
+  var privateKey  = fs.readFileSync(options.nodeJsPrivateKey, 'utf8');
+  var certificate = fs.readFileSync(options.nodeJsCertificate, 'utf8');
   var credentials = {
     key: privateKey,
     cert: certificate
