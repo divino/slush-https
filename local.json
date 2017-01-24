@@ -12,5 +12,7 @@
   "disallow-updates": "false",
   "appusers-only": "false",
   "httpsStrict": "false",
-  "mlCertificate": "certificate-ml.crt"
+  "mlCertificate": "certificate-ml.crt",
+  "nodeJsCertificate": "server.crt",
+  "nodeJsPrivateKey": "server.key"
 }
