@@ -1,0 +1,201 @@
+## How to enable HTTPS on Slush Marklogic-Node?
+
+1. Create a slush project
+
+```bash    
+$ slush marklogic-node
+```
+
+2. Bootstrap project
+
+```bash
+$ ./ml local bootstrap
+```
+
+3. Deploy modules
+
+```bash
+$./ml local deploy modules
+```
+
+4. Load sample data
+
+```bash
+$ ./ml local mlcp -options_file import-sample-data.options
+```
+
+4. Deploy sources
+
+```bash    
+$ ./ml local deploy src
+```
+
+5. Enable SSL in ML Part 1
+
+Uncomment and fill up the following in build.properties or create and fillup in local.properties
+
+```properties
+ssl-certificate-template=
+ssl-certificate-countryName=
+ssl-certificate-stateOrProvinceName=
+ssl-certificate-localityName=
+ssl-certificate-organizationName=
+ssl-certificate-organizationalUnitName=
+ssl-certificate-emailAddress=
+```
+
+Example:
+
+```properties
+ssl-certificate-template=sample-template
+ssl-certificate-countryName=PH
+ssl-certificate-stateOrProvinceName=NCR
+ssl-certificate-localityName=Mandaluyong City
+ssl-certificate-organizationName=MarkLogic Philippines
+ssl-certificate-organizationalUnitName=Vanguard
+ssl-certificate-emailAddress=sample.sample@marklogic.com
+```
+
+6. Enable SSL in ML Part 2
+uncomment ssl-certificate-template from ml-config.xml 
+
+```xml
+<ssl-certificate-template>@ml.ssl-certificate-template</ssl-certificate-template>
+```
+
+####Note (for 5 and 6): 
+   
+   To create a template, uncomment at least ssl-certificate-template,
+   ssl-certificate-countryName, and ssl-certificate-oranizationName 
+
+7. Bootstrap to create and enable certificate
+   
+```bash    
+$ ./ml local bootstrap
+```
+
+8. Verify ML App server setting
+    
+   From the management console (usually http://localhost:8001): 
+    
+   1. Click on 'Configure'
+   2. Click on 'Groups'
+   3. Under the App Servers click on the specific app server you created
+   4. Scroll down to the bottom of the page
+   5. `"ssl certificate template"` should be set to the "ssl-certificate-template" from Step 5
+   6. `"ssl require client certificate"` should be `true`
+
+9. Download certificate
+    
+   From the management console:
+   
+   1. Click on Configure
+   2. Click on Security
+   3. Click on Certificate Templates
+   4. Under the summary page on right, click on the match to the "ssl-certificate-template"
+   5. Click on the status tab
+   6. Click download
+   7. Copy the file in the root of the project
+
+10. Create a key and certificate for the node server
+   
+   [Step by step guide can be found here](https://devcenter.heroku.com/articles/ssl-certificate-self)
+
+11. Copy the certificate and key in the root of the project
+      
+12. Edit local.json
+
+Set this to true to enable both SSL on node and instruct it to talk with ML in SSL
+
+```json
+"https": "true"
+```   
+
+If using self signed certificate set this to false
+
+```json
+"httpsStrict": "false"
+```
+
+set the value of this to the MarkLogic Certificate see Step 9
+
+```json
+"mlCertificate": "certificate-ml.crt"
+```
+
+set nodeJsCertificate to the filename of the certificate created on step 10 
+
+```json
+"nodeJsCertificate": "server.key"
+```
+
+set nodeJsPrivateKey to the filename of the key created on step 10 
+
+```json
+"nodeJsPrivateKey": "server.crt"
+```
+
+Complete example:
+
+```json
+{
+  "app-name": "slush-https",
+  "ml-version": "8",
+  "ml-host": "localhost",
+  "ml-admin-user": "admin",
+  "ml-admin-pass": "admin",
+  "ml-app-user": "slush-https-user",
+  "ml-app-pass": "2jr>5m9m;+#$tB$()",
+  "ml-http-port": "55540",
+  "node-port": "55570",
+  "guest-access": "false",
+  "disallow-updates": "false",
+  "appusers-only": "false",
+  "https": "true",
+  "httpsStrict": "false",
+  "mlCertificate": "certificate-ml.crt",
+  "nodeJsCertificate": "server.crt",
+  "nodeJsPrivateKey": "server.key"
+}
+
+```
+
+ 13. run node
+ gulp serve-local
+
+### Note:
+
+Right now, we cannot deploy server side code while SSL is enabled in ML. 
+
+1) What we can do is to temporarily disable SSL:
+   See "How to disable HTTPS in MarkLogic App Server?"
+   
+2) Comment `<ssl-certificate-template>@ml.ssl-certificate-template</ssl-certificate-template>` from "ml-config.xml"
+
+3) Comment `ssl-certificate-countryName` and `ssl-certificate-oranizationName` from the local.properties file
+
+4) Then do:
+
+```bash
+./ml local deploy modules
+./ml local deploy src
+```
+
+*Remember to revert these changes after.*
+
+## How to disable HTTPS in MarkLogic App Server?
+
+From the management console: 
+    
+1. Click on "Configure"
+2. Click on "Groups"
+3. Under the "App Servers" click on the specific app server you created
+4. Scroll down to the bottom of the page
+5. Set `"ssl certificate template"` to `"none"`
+6. Click "ok" button
+
+
+
+
+
+

@@ -14,8 +14,8 @@ module.exports = function(){
   var options = {
     env: environment,
     appName: process.env.APP_NAME || envJson['app-name'] || 'slush-app',
-    https: process.env.HTTPS || envJson['https'] == "true" || false,
-    httpsStrict: process.env.HTTPS_STRICT || envJson['httpsStrict'] == "true" || false,
+    https: bool(process.env.HTTPS || envJson['https'] === "true"),
+    httpsStrict: bool(process.env.HTTPS_STRICT || envJson['httpsStrict'] === "true" || true),
     // ML CERTIFICATE should be set if "ssl require client certificate" of the ML AppServer is set to true
     mlCertificate: process.env.ML_CERTIFICATE || envJson['mlCertificate'] || "",
     nodeJsCertificate: process.env.NODEJS_CERTIFICATE || envJson['nodeJsCertificate'] || "",
@@ -30,7 +30,7 @@ module.exports = function(){
     appUsersOnly: bool(process.env.APP_USERS_ONLY || envJson['appusers-only'] || config.marklogic.appUsersOnly || false)
   };
 
-  if (options.httpsStrict != "true") {
+  if (!options.httpsStrict) {
     console.warn("Allowing self signed certificates.");
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
   }
