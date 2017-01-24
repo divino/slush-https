@@ -100,14 +100,18 @@ function proxy(req, res) {
   console.log(
     req.method + ' ' + req.path + ' proxied to ' +
     options.mlHost + ':' + options.mlHttpPort + path);
+
   var reqOptions = {
       hostname: options.mlHost,
       port: options.mlHttpPort,
       method: req.method,
       path: path,
-      headers: req.headers,
-      ca: ca
-    };
+      headers: req.headers
+  };
+
+  if (ca) {
+    reqOptions["ca"] = ca;
+  }
 
   var passportUser = req.session.passport && req.session.passport.user;
   authHelper.getAuthorization(req.session, reqOptions.method, reqOptions.path,

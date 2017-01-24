@@ -11,6 +11,6 @@
   "guest-access": "false",
   "disallow-updates": "false",
   "appusers-only": "false",
-  "nodeJsCertificate": "server.crt",
-  "nodeJsPrivateKey": "server.key"
+  "httpsStrict": "false",
+  "mlCertificate": "certificate-ml.crt"
 }

@@ -8,7 +8,19 @@ var authHelper = require('./utils/auth-helper');
 var bodyParser = require('body-parser');
 var four0four = require('./utils/404')();
 var options = require('./utils/options')();
-var http = options.https?require('https'):require('http');
+var http = require('http');
+var https = require('https');
+var fs = require('fs');
+
+var ca = "";
+var httpClient = null;
+if (options.mlCertificate) {
+    console.log("Loading ML Certificate " + options.mlCertificate);
+    ca = fs.readFileSync(options.mlCertificate);
+    httpClient = https;
+} else {
+    httpClient = http;
+}
 
 // [GJo] (#31) Moved bodyParsing inside routing, otherwise it might try to parse uploaded binaries as json..
 router.use(bodyParser.urlencoded({extended: true}));
@@ -55,11 +67,12 @@ router.get('/user/status', function(req, res) {
         if (authorization) {
           headers.Authorization = authorization;
         }
-        var profile = http.get({
+        var profile = httpClient.get({
           hostname: options.mlHost,
           port: options.mlHttpPort,
           path: '/v1/documents?uri=/api/users/' + passportUser.username + '.json',
-          headers: headers
+          headers: headers,
+          ca: ca
         }, function(response) {
           if (response.statusCode === 200) {
             response.on('data', function(chunk) {
