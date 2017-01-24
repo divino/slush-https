@@ -5,13 +5,18 @@
 var router = require('express').Router();
 var authHelper = require('./utils/auth-helper');
 var options = require('./utils/options')();
-var http = options.https?require('https'):require('http');
+var http = require('http');
+var https = require('https');
 var fs = require('fs');
 
-var ca = ""
+var ca = "";
+var httpClient = null;
 if (options.mlCertificate) {
-  console.log("Loading ML Certificate " + options.mlCertificate)
-  fs.readFileSync(options.mlCertificate)
+  console.log("Loading ML Certificate " + options.mlCertificate);
+  ca = fs.readFileSync(options.mlCertificate);
+  httpClient = https;
+} else {
+  httpClient = http;
 }
 
 // ==================================
@@ -114,7 +119,7 @@ function proxy(req, res) {
       if (authorization) {
         reqOptions.headers.Authorization = authorization;
       }
-      var mlReq = http.request(reqOptions, function(response) {
+      var mlReq = httpClient.request(reqOptions, function(response) {
 
         res.statusCode = response.statusCode;
 

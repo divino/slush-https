@@ -901,7 +901,6 @@ function serve(env, specRunner) {
   var nodeOptions = getNodeOptions(env);
 
   nodeOptions.nodeArgs = (args.debug || args.debugBrk) ? [debugMode + '=5858'] : [];
-  //nodeOptions.nodeArgs = (args.debug || args.debugBrk) ? [debugMode + '=' + (args.debug?args.debug:args.debugBrk)] : [];
 
   if (args.verbose) {
     log(nodeOptions);
@@ -950,10 +949,10 @@ function getNodeOptions(env) {
       '`gulp init-local` creates local.json which can be modified for other environments as well');
   }
   var port = args['app-port'] || process.env.PORT || envJson['node-port'] || config.defaultPort;
-  return {
-    script: config.nodeServer,
-    delayTime: 1,
-    env: {
+
+  console.log("config.nodeServer : " + config.nodeServer);
+
+  var env = {
       'PORT': port,
       'NODE_ENV': env,
       'APP_PORT': port,
@@ -963,9 +962,22 @@ function getNodeOptions(env) {
       'ML_PORT': args['ml-http-port'] || process.env.ML_PORT || envJson['ml-http-port'] || config.marklogic.httpPort,
       'ML_XCC_PORT': args['ml-xcc-port'] || process.env.ML_XCC_PORT || envJson['ml-xcc-port'] || config.marklogic.xccPort,
       'ML_VERSION': args['ml-version'] || process.env.ML_VERSION || envJson['ml-version'] || config.marklogic.version,
-      'HTTPS' : args['https'] || process.env.HTTPS || envJson['https'] || config.marklogic.https,
-      'HTTPS_STRICT': args['httpsStrict'] || process.env.HTTPS_STRICT || envJson['httpsStrict'] || config.marklogic.httpsStrict
-    },
+      'ML_CERTIFICATE': args['ml-certificate'] || process.env.ML_CERTIFICATE || envJson['mlCertificate'] || config.marklogic.mlCertificate,
+      'HTTPS_STRICT': args['httpsStrict'] || process.env.HTTPS_STRICT || envJson['httpsStrict']==="true" || config.marklogic.httpsStrict || true
+  };
+
+  //Temporary fix to remove undefined nodes
+  //which becomes enviroment variables with string "undefined" values
+  for (var key in env) {
+      if (env[key] === undefined) {
+          delete env[key];
+      }
+  }
+
+  return {
+    script: config.nodeServer,
+    delayTime: 1,
+    env: env,
     watch: [config.server]
   };
 }
@@ -994,17 +1006,16 @@ function startBrowserSync(env, specRunner) {
   }
 
   var proxyUrl = 'localhost:' + nodeOptions.env.APP_PORT;
-  if (nodeOptions.env.HTTPS == "true") {
+  if (nodeOptions.env.ML_CERTIFICATE) {
     proxyUrl = 'https://' + proxyUrl;
   }
 
-  if (nodeOptions.env.HTTPS_STRICT != "true") {
+  if (!nodeOptions.env.HTTPS_STRICT) {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
   }
 
   var options = {
     proxy: proxyUrl,
-    //proxy: 'localhost:' + nodeOptions.env.APP_PORT,
     port: 3000,
     files: isDevMode(env) ? [
       config.client + '**/*.*',

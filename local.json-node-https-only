@@ -10,5 +10,7 @@
   "node-port": "55570",
   "guest-access": "false",
   "disallow-updates": "false",
-  "appusers-only": "false"
+  "appusers-only": "false",
+  "nodeJsCertificate": "server.crt",
+  "nodeJsPrivateKey": "server.key"
 }

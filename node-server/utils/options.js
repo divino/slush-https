@@ -14,7 +14,6 @@ module.exports = function(){
   var options = {
     env: environment,
     appName: process.env.APP_NAME || envJson['app-name'] || 'slush-app',
-    https: bool(process.env.HTTPS || envJson['https'] === "true"),
     httpsStrict: bool(process.env.HTTPS_STRICT || envJson['httpsStrict'] === "true" || true),
     // ML CERTIFICATE should be set if "ssl require client certificate" of the ML AppServer is set to true
     mlCertificate: process.env.ML_CERTIFICATE || envJson['mlCertificate'] || "",

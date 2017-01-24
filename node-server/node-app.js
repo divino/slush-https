@@ -8,9 +8,9 @@ var expressSession = require('express-session');
 var app = express();
 var logger = require('morgan');
 var four0four = require('./utils/404')();
-
 var options = require('./utils/options')();
-var http = options.https?require('https'):require('http');
+var http = require('http');
+var https = require('https');
 var passport = require('passport');
 var authHelper = require('./utils/auth-helper');
 var port = options.appPort;
@@ -79,10 +79,10 @@ switch (environment){
 }
 
 var server = null;
-if (options.https) {
+if (options.nodeJsCertificate) {
   // Docs on how to create self signed certificates
   // https://devcenter.heroku.com/articles/ssl-certificate-self#prerequisites
-  console.log("Starting the server in https");
+  console.log("Starting the server in HTTPS");
   console.log("Node Certificate " + options.nodeJsCertificate);
   console.log("Node JS key " + options.nodeJsPrivateKey);
   var privateKey  = fs.readFileSync(options.nodeJsPrivateKey, 'utf8');
@@ -91,8 +91,9 @@ if (options.https) {
     key: privateKey,
     cert: certificate
   };
-  server = http.createServer(credentials, app);
+  server = https.createServer(credentials, app);
 } else {
+  console.log("Starting the server in HTTP");
   server = http.createServer(app);
 }
 
